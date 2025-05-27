@@ -1,7 +1,7 @@
 CREATE TABLE '{table_name}' (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     task TEXT NOT NULL,
-    status TEXT DEFAULT 'pending',
+    status TEXT DEFAULT 'todo',
     create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     modify_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
