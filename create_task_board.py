@@ -35,8 +35,11 @@ if __name__ == '__main__':
     db_file = r'./database/todo.db'
     schema_file = r'./database/todo_schema.sql'
 
-    table_name = get_table_name()
-    if table_name:
-        create_table(db_file, table_name, schema_file)
-    else:
-        logging.error('No table name provided.')
+    try:
+        table_name = get_table_name()
+        if table_name:
+            create_table(db_file, table_name, schema_file)
+        else:
+            logging.error('No table name provided.')
+    except (EOFError, KeyboardInterrupt):
+        pass
