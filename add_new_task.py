@@ -1,6 +1,7 @@
 import sqlite3
 import sys
 import logging
+import readline
 
 
 def get_existing_tables(conn):

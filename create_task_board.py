@@ -1,6 +1,7 @@
 import sqlite3
 import sys
 import logging
+import readline
 from os import PathLike
 
 
