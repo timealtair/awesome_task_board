@@ -6,6 +6,12 @@ from tabulate import tabulate
 ERR_SYMBOL = '!>'
 
 
+def print_error(message: str):
+    print(
+        ERR_SYMBOL, message, file=sys.stderr,
+    )
+
+
 def _get_and_parse_results(query: str, conn: sqlite3.Connection) -> list:
     cursor = conn.cursor()
     cursor.execute(query)
@@ -45,10 +51,7 @@ def get_status_from_user(
         try:
             choice = int(choice)
         except ValueError:
-            print(
-                ERR_SYMBOL, 'Status should be valid number!',
-                file=sys.stderr,
-            )
+            print_error('Status should be valid number!')
             continue
         try:
             return status_list[choice]
@@ -56,10 +59,7 @@ def get_status_from_user(
             if choice == custom_num:
                 return input('Enter custom status: ')
             else:
-                print(
-                    ERR_SYMBOL, 'Status number is out of range!',
-                    file=sys.stderr,
-                )
+                print_error('Status number is out of range!')
 
 
 def get_table_from_user(conn: sqlite3.Connection) -> str:
@@ -72,10 +72,7 @@ def get_table_from_user(conn: sqlite3.Connection) -> str:
             choice = int(input('Choose a table by number: '))
             return tables[choice]
         except (ValueError, IndexError):
-            print(
-                ERR_SYMBOL, 'Invalid selection. Try again.',
-                file=sys.stderr,
-            )
+            print_error('Invalid selection. Try again.')
 
 
 def _get_keys_from_result_cursor(cursor: sqlite3.Cursor) -> list[str]:
@@ -97,7 +94,7 @@ def get_task_id_from_user(
 ) -> int | None:
     items, schema = _get_items_by_status(table, status, conn)
     if not items:
-        print(ERR_SYMBOL, 'No tasks found', file=sys.stderr)
+        print_error('No tasks found')
         return None
     print('Found tasks:')
     print(tabulate(items, schema))
@@ -105,18 +102,33 @@ def get_task_id_from_user(
         try:
             idx = int(input('Enter task id: '))
         except ValueError:
-            print(
-                ERR_SYMBOL, 'Index should be valid number!',
-                file=sys.stderr,
-            )
+            print_error('Index should be valid number!')
             continue
         if idx not in (el[0] for el in items):
-            print(
-                ERR_SYMBOL, 'Index is not in avalable tasks!',
-                file=sys.stderr,
-            )
+            print_error('Index is not in avalable tasks!')
             continue
         return idx
+
+
+def get_modify_or_delete_selection():
+    """
+    modify -> 0 | delete -> 1
+    """
+    print('Select option:\n0. modify\n1. delete')
+    while True:
+        choice = input('Enter option number (0): ')
+        if not choice.split():
+            return 0
+        try:
+            choice = int(choice)
+        except ValueError:
+            print_error('Option should be valid number 0 or 1')
+            continue
+        if choice in (0, 1):
+            return choice
+        else:
+            print_error('Number is out of range 0-1')
+            continue
 
 
 if __name__ == '__main__':
