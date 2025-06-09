@@ -164,8 +164,11 @@ def delete_task(
         return
 
 
-def modify_task():
-    pass
+def modify_task(table: str, idx: str, status: str, conn: sqlite3.Connection):
+    query = f"update `{table}` set status = '{status}' where id = {idx}"
+    cursor = conn.cursor()
+    cursor.execute(query)
+    conn.commit()
 
 
 if __name__ == '__main__':
