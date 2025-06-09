@@ -1,5 +1,4 @@
 import sqlite3
-import sys
 from os import PathLike
 from utils.db_functions import (
     get_table_from_user, get_status_from_user, get_task_id_from_user,
@@ -17,10 +16,15 @@ def modify_iter(table: str, conn: sqlite3.Connection, sep_symbol: str):
     idx, tasks, schema = get_task_id_from_user(table, status, conn)
     if idx is None:
         return
+    print_separator(sep_symbol)
     mod_or_del = get_modify_or_delete_selection()
     match mod_or_del:
         case 0:
-            modify_task(...)
+            print_separator(sep_symbol)
+            print('Select new status: ')
+            print_separator(sep_symbol)
+            status = get_status_from_user(table, conn, DEFAULT_STATUS_SET)
+            modify_task(table, idx, status, conn)
         case 1:
             delete_task(tasks, idx, table, conn)
         case _:
