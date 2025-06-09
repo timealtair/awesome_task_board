@@ -1,2 +1,8 @@
 # Sql db
 database/*.db
+
+# Python
+__pycache__
+
+# IDK ???
+.fuse_hidden*

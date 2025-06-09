@@ -1,16 +1,7 @@
 import sqlite3
 import sys
 import logging
-import readline
-
-
-def get_existing_tables(conn):
-    cursor = conn.cursor()
-    cursor.execute(
-        'SELECT name FROM sqlite_master '
-        "WHERE type='table' AND name NOT LIKE 'sqlite_%';"
-    )
-    return [row[0] for row in cursor.fetchall()]
+from utils.db_functions import get_existing_tables
 
 
 def show_table_selection(tables):
@@ -109,6 +100,8 @@ def main(db_file):
 
 
 if __name__ == '__main__':
+    import readline
+
     db_file = r'./database/todo.db'
     try:
         main(db_file)
