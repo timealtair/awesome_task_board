@@ -91,11 +91,11 @@ def _get_items_by_status(
 
 def get_task_id_from_user(
     table: str, status: str, conn: sqlite3.Connection
-) -> int | None:
+) -> tuple:
     items, schema = _get_items_by_status(table, status, conn)
     if not items:
         print_error('No tasks found')
-        return None
+        return None, None, None
     print('Found tasks:')
     print(tabulate(items, schema))
     while True:
@@ -107,7 +107,7 @@ def get_task_id_from_user(
         if idx not in (el[0] for el in items):
             print_error('Index is not in avalable tasks!')
             continue
-        return idx
+        return idx, items, schema
 
 
 def get_modify_or_delete_selection():
@@ -129,6 +129,39 @@ def get_modify_or_delete_selection():
         else:
             print_error('Number is out of range 0-1')
             continue
+
+
+def _delete_task(
+    table: str, idx: str, conn: sqlite3.Connection
+):
+    query = f'DELETE FROM `{table}` where id = {idx}'
+    cursor = conn.cursor()
+    cursor.execute(query)
+    conn.commit()
+
+
+def delete_task(
+    tasks: list[tuple], idx: str, table: str, conn: sqlite3.Connection
+):
+    target = None
+    for task in tasks:
+        if task[0] == idx:
+            target = task
+    if target is None:
+        raise RuntimeError("target task shouldn't be None!")
+    print('Task for deletion:', task, sep='\n')
+    while True:
+        choice = input('Are you sure (Yey/No): ').strip()
+        if not choice:
+            continue
+        if choice.lower() in 'yes':
+            _delete_task(task, idx, conn)
+        else:
+            return
+
+
+def modify_task():
+    pass
 
 
 if __name__ == '__main__':
