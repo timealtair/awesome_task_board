@@ -156,7 +156,7 @@ def delete_task(
             continue
         if choice.lower() in 'yes':
             _delete_task(table, idx, conn)
-        if choice.lower() not in 'no':
+        elif choice.lower() not in 'no':
             continue
         return
 
