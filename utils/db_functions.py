@@ -151,11 +151,11 @@ def delete_task(
         raise RuntimeError("target task shouldn't be None!")
     print('Task for deletion:', task, sep='\n')
     while True:
-        choice = input('Are you sure? (yey/no): ').strip()
+        choice = input('Are you sure? (yes/no): ').strip()
         if not choice:
             continue
         if choice.lower() in 'yes':
-            _delete_task(task, idx, conn)
+            _delete_task(table, idx, conn)
         else:
             return
 
