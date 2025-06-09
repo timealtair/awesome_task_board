@@ -1,7 +1,16 @@
 import sqlite3
 import sys
 import logging
-from utils.db_functions import get_existing_tables
+from utils.db_functions import (
+    get_existing_tables, get_status_from_user,
+)
+
+
+DEFAULT_STATUS_SET = dict.fromkeys((
+    'todo',
+    'in progress',
+    'done',
+))
 
 
 def show_table_selection(tables):
@@ -38,40 +47,6 @@ def parse_args(argv):
     return args
 
 
-def get_status_from_user():
-    print('Choose a status:')
-    print('1. todo (default)')
-    print('2. in progress')
-    print('3. done')
-    print('4. custom')
-
-    while True:
-        try:
-            choice = input('Enter your choice (1-4): ').strip()
-            if not choice:
-                return 'todo'
-            choice = int(choice)
-
-            if choice == 1:
-                return 'todo'
-            elif choice == 2:
-                return 'in progress'
-            elif choice == 3:
-                return 'done'
-            elif choice == 4:
-                custom_status = input('Enter custom status: ').strip()
-                if not custom_status:
-                    return 'todo'
-                return custom_status
-            else:
-                logging.error(
-                    'Invalid choice. Please enter a number between 1 and 4.'
-                )
-
-        except ValueError:
-            logging.error('Invalid input. Please enter a number.')
-
-
 def main(db_file):
     conn = sqlite3.connect(db_file)
     try:
@@ -91,7 +66,9 @@ def main(db_file):
                 table = show_table_selection(tables)
 
         task = args['task'] or input('Enter task: ').strip()
-        status = args['status'] or get_status_from_user()
+        status = args['status'] or get_status_from_user(
+            table, conn, DEFAULT_STATUS_SET
+        )
 
         insert_task(conn, table, task, status)
 
