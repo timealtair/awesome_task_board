@@ -1,5 +1,8 @@
+import sys
 import sqlite3
-import logging
+
+
+ERR_SYMBOL = '!>'
 
 
 def _get_and_parse_results(query: str, conn: sqlite3.Connection) -> list:
@@ -41,7 +44,10 @@ def get_status_from_user(
         try:
             choice = int(choice)
         except ValueError:
-            logging.error('Status should be valid number!')
+            print(
+                ERR_SYMBOL, 'Status should be valid number!',
+                file=sys.stderr,
+            )
             continue
         try:
             return status_list[choice]
@@ -49,7 +55,10 @@ def get_status_from_user(
             if choice == custom_num:
                 return input('Enter custom status: ')
             else:
-                logging.error('Status number is out of range!')
+                print(
+                    ERR_SYMBOL, 'Status number is out of range!',
+                    file=sys.stderr,
+                )
 
 
 def get_table_from_user(conn: sqlite3.Connection) -> str:
@@ -62,7 +71,10 @@ def get_table_from_user(conn: sqlite3.Connection) -> str:
             choice = int(input('Choose a table by number: '))
             return tables[choice]
         except (ValueError, IndexError):
-            logging.error('Invalid selection. Try again.')
+            print(
+                ERR_SYMBOL, 'Invalid selection. Try again.',
+                file=sys.stderr,
+            )
 
 
 if __name__ == '__main__':
