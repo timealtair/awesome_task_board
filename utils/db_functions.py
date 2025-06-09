@@ -1,5 +1,6 @@
 import sys
 import sqlite3
+from tabulate import tabulate
 
 
 ERR_SYMBOL = '!>'
@@ -77,6 +78,47 @@ def get_table_from_user(conn: sqlite3.Connection) -> str:
             )
 
 
+def _get_keys_from_result_cursor(cursor: sqlite3.Cursor) -> list[str]:
+    return [key[0] for key in cursor.description]
+
+
+def _get_items_by_status(
+    table: str, status: str, conn: sqlite3.Connection
+) -> tuple[list[tuple], list[str]]:
+    cursor = conn.cursor()
+    query = f"SELECT * FROM `{table}` WHERE status = '{status}'"
+    cursor.execute(query)
+    schema = _get_keys_from_result_cursor(cursor)
+    return cursor.fetchall(), schema
+
+
+def get_task_id_from_user(
+    table: str, status: str, conn: sqlite3.Connection
+) -> int | None:
+    items, schema = _get_items_by_status(table, status, conn)
+    if not items:
+        print(ERR_SYMBOL, 'No tasks found', file=sys.stderr)
+        return None
+    print('Found tasks:')
+    print(tabulate(items, schema))
+    while True:
+        try:
+            idx = int(input('Enter task id: '))
+        except ValueError:
+            print(
+                ERR_SYMBOL, 'Index should be valid number!',
+                file=sys.stderr,
+            )
+            continue
+        if idx not in (el[0] for el in items):
+            print(
+                ERR_SYMBOL, 'Index is not in avalable tasks!',
+                file=sys.stderr,
+            )
+            continue
+        return idx
+
+
 if __name__ == '__main__':
     import readline
 
@@ -91,4 +133,5 @@ if __name__ == '__main__':
     conn = sqlite3.Connection(db_file)
     table = get_table_from_user(conn)
     status = get_status_from_user(table, conn, DEFAULT_STATUS_SET)
-    print('You selected status:', status)
+    idx = get_task_id_from_user(table, status, conn)
+    print('Your idx:', idx)
