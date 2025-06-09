@@ -99,8 +99,11 @@ def get_task_id_from_user(
     print('Found tasks:')
     print(tabulate(items, schema))
     while True:
+        idx = input('Enter task id: ')
+        if not idx.strip():
+            return None, None, None
         try:
-            idx = int(input('Enter task id: '))
+            idx = int(idx)
         except ValueError:
             print_error('Index should be valid number!')
             continue
