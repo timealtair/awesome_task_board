@@ -1,9 +1,9 @@
 import sqlite3
 import sys
-import logging
 from utils.db_functions import (
     get_table_from_user, get_status_from_user,
 )
+from utils.prettify_functions import print_separator
 
 
 DEFAULT_STATUS_SET = dict.fromkeys((
@@ -33,7 +33,7 @@ def parse_args(argv):
     return args
 
 
-def main(db_file):
+def main(db_file, separator):
     conn = sqlite3.connect(db_file)
     try:
         args = parse_args(sys.argv)
@@ -41,12 +41,22 @@ def main(db_file):
         if args['table']:
             table = args['table']
         else:
+            print_separator(separator)
             table = get_table_from_user(conn)
 
-        task = args['task'] or input('Enter task: ').strip()
-        status = args['status'] or get_status_from_user(
-            table, conn, DEFAULT_STATUS_SET
-        )
+        if args['task']:
+            task = args['task']
+        else:
+            print_separator(separator)
+            task = input('Enter task: ').strip()
+
+        if args['status']:
+            status = args['status']
+        else:
+            print_separator(separator)
+            status = get_status_from_user(
+                table, conn, DEFAULT_STATUS_SET
+            )
 
         insert_task(conn, table, task, status)
 
@@ -58,7 +68,9 @@ if __name__ == '__main__':
     import readline
 
     db_file = r'./database/todo.db'
+    separator = '`'
+
     try:
-        main(db_file)
+        main(db_file, separator)
     except (EOFError, KeyboardInterrupt):
         pass
