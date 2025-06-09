@@ -8,7 +8,7 @@ def _get_and_parse_results(query: str, conn: sqlite3.Connection) -> list:
     return [row[0] for row in cursor.fetchall()]
 
 
-def get_existing_tables(conn: sqlite3.Connection) -> list:
+def _get_existing_tables(conn: sqlite3.Connection) -> list:
     query = (
         'SELECT name FROM sqlite_master '
         "WHERE type='table' AND name NOT LIKE 'sqlite_%';"
@@ -29,13 +29,13 @@ def get_status_from_user(
         dict.fromkeys(existed_status_set)
     )
     status_list = list(default_status_set)
-    print('Available status numbers:')
+    print('Available status list:')
     for num, status in enumerate(status_list):
         print(f'{num}. {status}')
     custom_num = len(status_list)
     print(f'{custom_num}. custom')
     while True:
-        choice = input('Enter your status number (0 is default): ')
+        choice = input('Enter your status number (0): ')
         if not choice.strip():
             choice = 0
         try:
@@ -52,6 +52,19 @@ def get_status_from_user(
                 logging.error('Status number is out of range!')
 
 
+def get_table_from_user(conn: sqlite3.Connection) -> str:
+    tables = _get_existing_tables(conn)
+    print('Existing tables:')
+    for num, table in enumerate(tables):
+        print(f'{num}. {table}')
+    while True:
+        try:
+            choice = int(input('Choose a table by number: '))
+            return tables[choice]
+        except (ValueError, IndexError):
+            logging.error('Invalid selection. Try again.')
+
+
 if __name__ == '__main__':
     import readline
 
@@ -64,8 +77,6 @@ if __name__ == '__main__':
     ))
 
     conn = sqlite3.Connection(db_file)
-    print('Found tables:')
-    print(get_existing_tables(conn))
-    table = input('Enter table name: ')
+    table = get_table_from_user(conn)
     status = get_status_from_user(table, conn, DEFAULT_STATUS_SET)
     print('You selected status:', status)
