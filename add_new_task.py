@@ -2,7 +2,7 @@ import sqlite3
 import sys
 import logging
 from utils.db_functions import (
-    get_existing_tables, get_status_from_user,
+    get_table_from_user, get_status_from_user,
 )
 
 
@@ -11,20 +11,6 @@ DEFAULT_STATUS_SET = dict.fromkeys((
     'in progress',
     'done',
 ))
-
-
-def show_table_selection(tables):
-    print('Existing tables:')
-    for idx, table in enumerate(tables, start=1):
-        print(f'{idx}. {table}')
-    while True:
-        try:
-            choice = int(input('Choose a table by number: '))
-            if 1 <= choice <= len(tables):
-                return tables[choice - 1]
-        except ValueError:
-            pass
-        logging.error('Invalid selection. Try again.')
 
 
 def insert_task(conn, table, task, status):
@@ -55,15 +41,7 @@ def main(db_file):
         if args['table']:
             table = args['table']
         else:
-            tables = get_existing_tables(conn)
-            if not tables:
-                print(
-                    'No existing tables found. Please enter a name '
-                    'to create a new task table.'
-                )
-                table = input('Enter table name: ').strip()
-            else:
-                table = show_table_selection(tables)
+            table = get_table_from_user(conn)
 
         task = args['task'] or input('Enter task: ').strip()
         status = args['status'] or get_status_from_user(
