@@ -4,13 +4,7 @@ from utils.db_functions import (
     get_table_from_user, get_status_from_user,
 )
 from utils.prettify_functions import print_separator
-
-
-DEFAULT_STATUS_SET = dict.fromkeys((
-    'todo',
-    'in progress',
-    'done',
-))
+from settings.default_status_set import DEFAULT_STATUS_SET
 
 
 def insert_task(conn, table, task, status):
