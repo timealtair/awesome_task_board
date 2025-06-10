@@ -96,6 +96,7 @@ def get_task_id_from_user(
     if not items:
         print_error('No tasks found')
         return None, None, None
+    items = [el[:-3] for el in items]
     print('Found tasks:')
     print(tabulate(items, schema))
     while True:
