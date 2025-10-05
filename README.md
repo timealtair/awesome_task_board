@@ -2,6 +2,8 @@
 
 A lightweight command-line task board application for managing your tasks and workflows efficiently.
 
+![Demo](/utils/media/demo.mp4)
+
 ## 🌟 Overview
 
 Task Board Manager is a simple yet powerful Python-based task management tool that helps you organize your work. Create boards, add tasks, and track their progress through customizable status workflows - all from your terminal.
