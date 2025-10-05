@@ -2,7 +2,7 @@
 
 A lightweight command-line task board application for managing your tasks and workflows efficiently.
 
-![Demo](/utils/media/demo.mp4)
+[Demo](/utils/media/demo.gif)
 
 ## 🌟 Overview
 
