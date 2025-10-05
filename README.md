@@ -1,6 +1,6 @@
 # 📋 Task Board Manager
 
-A lightweight command-line task board application for managing your tasks and workflows efficiently.
+A lightweight dialog-driven command-line task board application for managing your tasks and workflows efficiently.
 
 ![Demo](/utils/media/demo.gif)
 
